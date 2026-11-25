@@ -1,0 +1,43 @@
+# Managed by smartbooks (sbs setup). Lets smartbooks's local library commands run
+# without a prompt. Removed by `sbs setup --disable codex` and by
+# `smartbooks uninstall`.
+prefix_rule(
+    pattern = ["sbs", "items", ["list", "toc", "read", "get", "search", "cite"]],
+    decision = "allow",
+    justification = "smartbooks: read the user's local library",
+)
+prefix_rule(
+    pattern = ["sbs", "access", ["start", "complete", "value"]],
+    decision = "allow",
+    justification = "smartbooks: open and close a reading session",
+)
+prefix_rule(
+    pattern = ["sbs", "librarian", "ledger", ["tick", "show", "record"]],
+    decision = "allow",
+    justification = "smartbooks: the librarian's notebook for this project",
+)
+prefix_rule(
+    pattern = ["sbs", "librarian", "report-gap"],
+    decision = "allow",
+    justification = "smartbooks: note a topic the library lacks",
+)
+prefix_rule(
+    pattern = ["sbs", "marketplace", ["browse", "subscribe"]],
+    decision = "allow",
+    justification = "smartbooks: find and add a local catalog book",
+)
+prefix_rule(
+    pattern = ["sbs", "ms", ["list", "show"]],
+    decision = "allow",
+    justification = "smartbooks: list the user's manuscripts",
+)
+prefix_rule(
+    pattern = ["sbs", "auth", "whoami"],
+    decision = "allow",
+    justification = "smartbooks: check local identity",
+)
+prefix_rule(
+    pattern = ["sbs", "setup", ["--status", "--list"]],
+    decision = "allow",
+    justification = "smartbooks: show where smartbooks is installed",
+)

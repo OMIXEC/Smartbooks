@@ -1,0 +1,49 @@
+{
+  "name": "smartbooks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Smartbooks, a local-first library for coding agents.",
+  "license": "MIT",
+  "bin": {
+    "sbs": "./dist/cli.js",
+    "candle": "./dist/cli.js",
+    "candlekeep": "./dist/cli.js",
+    "sumbookit": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "skills",
+    "agents",
+    "hooks",
+    ".claude-plugin",
+    "catalog",
+    "codex",
+    "context",
+    "opencode",
+    "docs"
+  ],
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "sync": "node dist/cli.js sync",
+    "verify": "node scripts/verify.mjs"
+  },
+  "dependencies": {
+    "commander": "^15.0.0",
+    "fflate": "^0.8.3",
+    "unpdf": "^1.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

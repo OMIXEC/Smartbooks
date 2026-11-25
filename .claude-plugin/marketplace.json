@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "description": "Access your local smartbooks library from Claude Code",
+    "version": "0.1.0"
+  },
+  "name": "smartbooks",
+  "owner": {
+    "name": "smartbooks",
+    "email": "local@smartbooks"
+  },
+  "plugins": [
+    {
+      "name": "smartbooks",
+      "description": "Local books and docs with page citations",
+      "source": "./plugins/smartbooks"
+    }
+  ]
+}

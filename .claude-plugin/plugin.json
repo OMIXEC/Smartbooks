@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "smartbooks",
+  "displayName": "smartbooks",
+  "version": "0.1.0",
+  "description": "A free, local-first library for coding agents: browse books and docs by table of contents, read by page, and cite exact quotes. No account, no server.",
+  "license": "MIT",
+  "author": {
+    "name": "smartbooks contributors"
+  },
+  "keywords": [
+    "books",
+    "documents",
+    "citations",
+    "research",
+    "library",
+    "local-first",
+    "pdf",
+    "markdown"
+  ]
+}

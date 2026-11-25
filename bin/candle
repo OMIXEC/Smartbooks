@@ -1,0 +1,4 @@
+#!/bin/sh
+# candle plugin entrypoint. Uses the built CLI shipped next to this file.
+DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+exec node "$DIR/dist/cli.js" "$@"

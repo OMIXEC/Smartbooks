@@ -30,7 +30,8 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test test/*.test.mjs",
     "sync": "node dist/cli.js sync",
-    "verify": "node scripts/verify.mjs"
+    "verify": "node scripts/verify.mjs",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "commander": "^15.0.0",

@@ -1,6 +1,6 @@
 # Managed by smartbooks (sbs setup). Lets smartbooks's local library commands run
 # without a prompt. Removed by `sbs setup --disable codex` and by
-# `smartbooks uninstall`.
+# `sbs uninstall`.
 prefix_rule(
     pattern = ["sbs", "items", ["list", "toc", "read", "get", "search", "cite"]],
     decision = "allow",

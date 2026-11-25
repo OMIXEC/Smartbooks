@@ -277,18 +277,18 @@ A checked-in `.candle/shelf.json` (or `.candlekeep/shelf.json`) declares the boo
 To manage the shelf:
 
 ```
-smartbooks shelf init --name "Project"
-smartbooks shelf add <id> --topics "security,api" --why "The API standard for this repo"
-smartbooks shelf show --json
-smartbooks shelf use <slug>
+sbs shelf init --name "Project"
+sbs shelf add <id> --topics "security,api" --why "The API standard for this repo"
+sbs shelf show --json
+sbs shelf use <slug>
 ```
 
 ## Health and Setup
 
 - `sbs items list --json` — what is in the library.
 - `sbs items status` — counts and types.
-- `smartbooks scan` — local files not yet ingested.
-- `smartbooks sync` — ingest every configured book and doc.
+- `sbs scan` — local files not yet ingested.
+- `sbs sync` — ingest every configured book and doc.
 - `sbs setup` — install this plugin into detected coding agents.
 - `sbs setup --status` — where smartbooks is installed.
 - `smartbooks version` — version.

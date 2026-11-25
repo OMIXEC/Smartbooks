@@ -25,6 +25,6 @@ At task completion only, match the session's insight against each active manuscr
 Use `sbs items put <id>:N --file <file> --expect-version <V> --no-session` to edit one page, `sbs items append` to add pages, and `sbs items create` for a new book. One page is at most 20,000 bytes.
 
 ## Setup
-`sbs setup --status` shows where smartbooks is installed. `smartbooks sync` ingests every configured book and doc.
+`sbs setup --status` shows where smartbooks is installed. `sbs sync` ingests every configured book and doc.
 </IMPORTANT>
 <!-- smartbooks:end -->

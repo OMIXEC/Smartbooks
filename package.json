@@ -6,10 +6,7 @@
   "description": "Smartbooks, a local-first library for coding agents.",
   "license": "MIT",
   "bin": {
-    "sbs": "./dist/cli.js",
-    "candle": "./dist/cli.js",
-    "candlekeep": "./dist/cli.js",
-    "sumbookit": "./dist/cli.js"
+    "sbs": "./dist/cli.js"
   },
   "files": [
     "dist",
@@ -34,9 +31,11 @@
     "prepare": "npm run build"
   },
   "dependencies": {
+    "@modelcontextprotocol/server": "2.4.0",
     "commander": "^15.0.0",
     "fflate": "^0.8.3",
-    "unpdf": "^1.8.1"
+    "unpdf": "^1.8.1",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@types/node": "^26.6.0",

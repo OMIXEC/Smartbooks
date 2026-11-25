@@ -1,6 +1,6 @@
 # Smartbooks architecture
 
-candle is a local-first CLI plus a coding-agent plugin. The CLI owns the
+smartbooks is a local-first CLI plus a coding-agent plugin. The CLI owns the
 library, the catalog, manuscripts, the project ledger and the setup. The plugin
 tells an agent how to use the CLI and injects the session context that makes the
 workflow fire at the right moment.
@@ -10,13 +10,13 @@ workflow fire at the right moment.
 ```
 .claude-plugin/       Claude Code plugin + marketplace manifests, icon
 agents/               librarian, item-reader, book-writer, book-enricher (Claude Code)
-bin/candle            plugin entrypoint
+bin/sbs            plugin entrypoint
 catalog/books.json    local marketplace listings
 codex/                Codex agents, rules and AGENTS.md fragment
 docs/                 this architecture, CLI spec, configuration, reverse-engineering
 hooks/hooks.json      SessionStart, PostToolUse, SessionEnd
 scripts/              install.sh, verify.mjs
-skills/candle/        SKILL.md
+skills/smartbooks/        SKILL.md
 src/
   cli.ts              command registration
   config.ts           config merge and root resolution
@@ -52,10 +52,10 @@ independent.
 
 ## Storage
 
-Default home: `~/.candle` (override with `CANDLE_HOME` or `SUMBOOKIT_HOME`).
+Default home: `~/.smartbooks` (override with `SMARTBOOKS_HOME`).
 
 ```
-~/.candle/
+~/.smartbooks/
   config.json                 global config
   library/items.json          ItemMeta[]
   library/pages/<id>.json     { pages, toc }
@@ -110,34 +110,34 @@ human text or JSON via `emit`.
 
 ## Plugin
 
-- `skills/candle/SKILL.md` — the workflow: plan mode, auto mode, explicit
+- `skills/smartbooks/SKILL.md` — the workflow: plan mode, auto mode, explicit
   research, citations, manuscripts, writing, shelf, health.
 - `agents/*.md` — Claude Code subagents with frontmatter.
 - `hooks/hooks.json` — `SessionStart` runs `dist/hooks/session-start.js`;
   `PostToolUse` runs the read tracker; `SessionEnd` closes the access session.
 - `dist/hooks/session-start.js` — reads config, items, manuscripts, shelf and
-  ledger; assembles `<candle>` with header, manuscripts, shelf, EXPLORED, plan
+  ledger; assembles `<smartbooks>` with header, manuscripts, shelf, EXPLORED, plan
   and auto directives; caps at 9,500 bytes and sheds manuscripts then shelf.
-- `PostToolUse` parses `candle|sumbookit items read|get` commands, records item
+- `PostToolUse` parses `sbs items read|get` commands, records item
   ids in `reads.json` and the open access session.
 - `SessionEnd` completes the open access session.
 
 ## Setup
 
 `sbs setup` detects `~/.claude`, `~/.codex`, `~/.gemini`, `~/.cursor`,
-`~/.copilot`, `~/.grok`. For each detected agent it copies only candle's files:
+`~/.copilot`, `~/.grok`. For each detected agent it copies only smartbooks's files:
 
 - Claude Code: plugin cache + local marketplace + `installed_plugins.json` +
   `known_marketplaces.json` + `settings.json` merge (enabled plugin, marketplace,
-  read-only permissions) + `~/.claude/skills/candle`.
+  read-only permissions) + `~/.claude/skills/smartbooks`.
 - Codex: skill, four TOML agents, rules, AGENTS.md block.
-- OpenCode: `~/.config/opencode/skills/candle`, four subagents in
+- OpenCode: `~/.config/opencode/skills/smartbooks`, four subagents in
   `~/.config/opencode/agents`, three commands, and an AGENTS.md block.
-- OMP: `~/.omp/agent/skills/candle`, four subagents in
+- OMP: `~/.omp/agent/skills/smartbooks`, four subagents in
   `~/.omp/agent/agents`, and an AGENTS.md block.
 - Others: skill (Copilot also gets the instructions block).
 
-It also writes `~/.local/bin/candle` (and a `sumbookit` symlink) and a marked
+It also writes `~/.local/bin/sbs` (and a `sbs` symlink) and a marked
 PATH block in the shell rc. `--disable` removes only those files and settings
 keys.
 

@@ -20,7 +20,7 @@ export function registerShelf(program: Command): void {
   addCommon(
     shelf
       .command('init')
-      .description('Create this project\'s shelf manifest (./.candle/shelf.json)')
+      .description('Create this project\'s shelf manifest (./.smartbooks/shelf.json)')
       .option('--name <name>', 'Shelf name')
       .action(async cmd => {
         const root = await projectRoot()
@@ -51,7 +51,7 @@ export function registerShelf(program: Command): void {
       .description('Show a shelf and its books')
       .action(async (slug: string | undefined, cmd: Command) => {
         const manifest = await readShelfManifest()
-        if (!manifest) return printError('NO_SHELF', 'No shelf manifest in this project. Run `candle shelf init`.')
+        if (!manifest) return printError('NO_SHELF', 'No shelf manifest in this project. Run `sbs shelf init`.')
         if (slug && slug !== manifest.shelf) return printError('NOT_FOUND', `Shelf not found: ${slug}`)
         const books = await Promise.all(manifest.books.map(async b => ({ ...b, item: await getItem(b.id) })))
         emit(
@@ -137,7 +137,7 @@ export function registerShelf(program: Command): void {
         const manifest = await readShelfManifest()
         if (!manifest || manifest.shelf !== slug) return printError('NOT_FOUND', `Shelf not found: ${slug}`)
         const root = await projectRoot()
-        await fs.rm(path.join(root, '.candle', 'shelf.json'), { force: true })
+        await fs.rm(path.join(root, '.smartbooks', 'shelf.json'), { force: true })
         await setActiveShelf(null)
         emit(cmd, `Deleted ${slug}`, { deleted: slug })
       }),

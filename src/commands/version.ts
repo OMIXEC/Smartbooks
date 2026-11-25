@@ -1,5 +1,5 @@
 import type { Command } from 'commander'
-import { candleHome, listItems, listManuscripts } from '../store.js'
+import { smartbooksHome, listItems, listManuscripts } from '../store.js'
 import { addCommon, emit } from './common.js'
 
 export const VERSION = '0.1.0'
@@ -25,7 +25,7 @@ export function registerVersion(program: Command): void {
           cmd,
           [
             'Smartbooks — a free, local-first library for coding agents.',
-            `Home: ${candleHome()}`,
+            `Home: ${smartbooksHome()}`,
             `Books and docs: ${items.length}`,
             `Manuscripts: ${ms.length}`,
             '',
@@ -34,7 +34,7 @@ export function registerVersion(program: Command): void {
             '     sbs items read <id> --pages 1-3',
             '     sbs sync',
           ].join('\n'),
-          { home: candleHome(), items: items.length, manuscripts: ms.length },
+          { home: smartbooksHome(), items: items.length, manuscripts: ms.length },
         )
       }),
   )

@@ -1,5 +1,5 @@
-import path from 'node:path'
 import { Command } from 'commander'
+import { startMcpServer } from './mcp.js'
 import { registerAccess } from './commands/access.js'
 import { registerAuth } from './commands/auth.js'
 import { registerConfig } from './commands/config.js'
@@ -13,10 +13,9 @@ import { registerShelf } from './commands/shelf.js'
 import { registerVersion, VERSION } from './commands/version.js'
 import { addCommon, emit, setGlobalOptions } from './commands/common.js'
 
-const invoked = path.basename(process.argv[1] || 'sbs')
 const program = new Command()
 program
-  .name(['sbs', 'candle', 'candlekeep', 'sumbookit'].includes(invoked) ? invoked : 'sbs')
+  .name('sbs')
   .description('A free, local-first library for coding agents: browse by table of contents, read by page, cite exact quotes.')
   .version(VERSION)
   .option('--json', 'Output in JSON format')
@@ -38,6 +37,7 @@ registerAuth(program)
 registerScan(program)
 registerSetup(program)
 registerVersion(program)
+program.command('mcp').description('Serve the local library over MCP stdio').action(startMcpServer)
 
 addCommon(
   program

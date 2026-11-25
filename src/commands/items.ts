@@ -64,6 +64,7 @@ export function registerItems(program: Command): void {
     items
       .command('read <ids...>')
       .description('Read content from items')
+      .option('--all', 'Read all pages through bounded continuations')
       .option('--pages <range>', 'Page range, e.g. 3-7')
       .option('--page <n>', 'Read one page')
       .option('--part <n>', 'Read one part of a large page')
@@ -81,7 +82,9 @@ export function registerItems(program: Command): void {
             continue
           }
           const pagesOpt = optsOf(cmd).pages ? String(optsOf(cmd).pages) : null
-          const range = rangeFor(item, t.pages ?? pagesOpt, optsOf(cmd).page)
+          const range: [number, number] = optsOf(cmd).all && !t.pages && !pagesOpt && !optsOf(cmd).page
+            ? [1, item.pageCount]
+            : rangeFor(item, t.pages ?? pagesOpt, optsOf(cmd).page)
           const result = readPages(item, range, part)
           results.push({ id: item.id, title: item.title, version: item.updatedAt, pages: result.pages, next: result.next })
           human.push(renderRead(item, result))

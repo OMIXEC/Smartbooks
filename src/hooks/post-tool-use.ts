@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
-import { candleHome, recordAccessRead } from '../store.js'
+import { smartbooksHome, recordAccessRead } from '../store.js'
 import { nowIso, readJson, writeJson } from '../util.js'
 
 interface HookPayload {
@@ -16,7 +16,7 @@ interface ReadRow {
   at: string
 }
 
-const CMD_RE = /(?:^|[\s;&|(`'"/])(?:sbs|candle|candlekeep|sumbookit)(?:\s+--?[A-Za-z][\w-]*(?:=[^\s;&|]+|\s+(?!-)[^\s;&|]+)?)*\s+items\s+(?:read|get)\b([^;&|\n]*)/g
+const CMD_RE = /(?:^|[\s;&|(`'"/])(?:sbs)(?:\s+--?[A-Za-z][\w-]*(?:=[^\s;&|]+|\s+(?!-)[^\s;&|]+)?)*\s+items\s+(?:read|get)\b([^;&|\n]*)/g
 
 async function main(): Promise<void> {
   const payload = await readPayload()
@@ -24,13 +24,13 @@ async function main(): Promise<void> {
   if (!command) return
   const ids = readsInCommand(command)
   if (ids.length === 0) return
-  const rows = await readJson<ReadRow[]>(path.join(candleHome(), 'reads.json'), [])
+  const rows = await readJson<ReadRow[]>(path.join(smartbooksHome(), 'reads.json'), [])
   for (const id of ids) {
     rows.push({ id, title: '', at: nowIso() })
     await recordAccessRead(id, '')
   }
-  await fs.mkdir(candleHome(), { recursive: true })
-  await writeJson(path.join(candleHome(), 'reads.json'), rows.slice(-2000))
+  await fs.mkdir(smartbooksHome(), { recursive: true })
+  await writeJson(path.join(smartbooksHome(), 'reads.json'), rows.slice(-2000))
 }
 
 function readsInCommand(command: string): string[] {

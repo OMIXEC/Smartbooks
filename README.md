@@ -15,6 +15,8 @@ Use it to give an agent access to specific documents during a task, inspect the 
 
 Smartbooks is an early local release. EPUB pages correspond to extracted spine items, so their numbers can differ from a printed edition. PDF extraction depends on the source text and may need OCR for scanned pages. Check extraction and citations against the original before relying on them.
 
+Keep the original files: extracted text does not preserve every image, table, layout, or scanned page. Smartbooks cannot guarantee complete visual or semantic context for every book.
+
 ## Requirements
 
 - Node.js **22.12 or later** and npm.
@@ -39,7 +41,7 @@ sbs setup --status
 sbs --help
 ```
 
-Setup keeps existing `candle`, `candlekeep`, and `sumbookit` executables or links in place. Where those names are available, it creates compatibility aliases. The installed wrapper points to this checkout, so keep the checkout in its installed location.
+The installed wrapper points to this checkout, so keep the checkout in its installed location.
 
 To enable or disable a specific agent integration:
 
@@ -75,9 +77,15 @@ sbs items toc BOOK_ID --json --no-session
 sbs items read BOOK_ID --pages 1-2 --json --no-session
 ```
 
+Use `sbs items read BOOK_ID --all` to traverse the entire extracted book. JSON clients can follow the returned `next` page range and optional part until it is null; each response remains bounded.
+
+## Connect an MCP client
+
+Run `sbs mcp` as a local stdio server. Configure your MCP client to launch `sbs` with the single argument `mcp`, and set `SMARTBOOKS_HOME` in its environment if you use a non-default library. It exposes `list_books`, `book_toc`, `read_pages`, `search_books`, and `verify_quote`. Follow `read_pages` continuation values to retrieve a complete extracted range. The client has access to the selected local library, so connect only trusted clients.
+
 ## Configure a library
 
-By default, Smartbooks uses `~/.candle` so existing Candle items and their IDs remain available. Set `SMARTBOOKS_HOME` to use another library directory. Resolution order is `SMARTBOOKS_HOME`, `CANDLE_HOME`, `SUMBOOKIT_HOME`, then `~/.candle`.
+By default, Smartbooks uses `~/.smartbooks`. Set `SMARTBOOKS_HOME` to use another library directory.
 
 To scan a folder, create `smartbooks.config.json` in your working directory:
 
@@ -102,7 +110,7 @@ sbs sync
 
 `sync` processes files under the configured roots and reports failures. `sync --prune` also removes library items whose source files are missing. Review the scan and your backup before using it.
 
-Configuration merges built-in defaults, the library home's `config.json`, `candle.config.json`, and then `smartbooks.config.json`. The legacy project config remains supported. Currently, `sbs config set --project` writes `candle.config.json`, so values in an existing `smartbooks.config.json` can override it.
+Configuration merges built-in defaults, the library home’s `config.json`, and `smartbooks.config.json` in the working directory. The project configuration takes precedence.
 
 ## Shelves and manuscripts
 
@@ -114,7 +122,7 @@ sbs shelf add BOOK_ID --topics "architecture,security" --why "Project reference"
 sbs shelf show
 ```
 
-The project shelf uses `.candle/shelf.json` for compatibility. Review its contents before committing it, particularly titles and item IDs.
+The project shelf uses `.smartbooks/shelf.json`. Review its contents before committing it, particularly titles and item IDs.
 
 Manuscript commands manage locally stored writing projects:
 
@@ -125,18 +133,18 @@ sbs ms show MANUSCRIPT_ID
 
 See [the CLI reference](docs/CLI-SPEC.md) or run `sbs COMMAND --help` for editing, version checks, the librarian ledger, and catalog commands. The shipped local catalog starts empty; add only material you have permission to use.
 
-## Existing Candle libraries
+## Library storage
 
-Smartbooks reads the existing library location and understands the legacy configuration and command names. Installation does not migrate or delete library content. Back up your library directory before changing locations or performing bulk operations.
+Back up the library directory before changing locations or performing bulk operations. Book IDs and page records remain stable when you copy an existing compatible library into the Smartbooks home directory.
 
-To use a separate test library without changing the existing one:
+To use a separate test library:
 
 ```sh
 export SMARTBOOKS_HOME="$HOME/smartbooks-test-library"
 sbs items list
 ```
 
-Clear the variable to return to the normal resolution order.
+Clear the variable to return to the default location.
 
 ## Privacy and integration
 
@@ -157,4 +165,4 @@ The package contains an installer, agent integrations, and source adapters. Test
 
 ## Origin and license
 
-Smartbooks derives from the local Candle clean-room implementation. The MIT license and existing library format are retained. This repository does not include private source books or a personal library. See [LICENSE](LICENSE).
+The MIT license and contributor attribution are retained. This repository does not include private source books or a personal library. See [LICENSE](LICENSE).

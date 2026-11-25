@@ -108,7 +108,7 @@ export interface RootConfig {
   title?: string
 }
 
-export interface CandleConfig {
+export interface SmartbooksConfig {
   library: {
     roots: RootConfig[]
   }
@@ -140,7 +140,7 @@ export interface WhoAmI {
   trial: { active: false }
 }
 
-export interface CandleError {
+export interface SmartbooksError {
   code: string
   error: string
   hint: string | null

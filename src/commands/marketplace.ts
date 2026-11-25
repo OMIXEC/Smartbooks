@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import type { Command } from 'commander'
-import { candleHome, findItemBySource, getItem, removeItem, saveItem } from '../store.js'
+import { smartbooksHome, findItemBySource, getItem, removeItem, saveItem } from '../store.js'
 import { ingestFile } from '../ingest/index.js'
 import type { Listing } from '../types.js'
 import { exists, nowIso, printError, readJson, writeJson } from '../util.js'
@@ -160,7 +160,7 @@ async function resolveListingFile(listing: Listing, baseDir: string): Promise<st
 }
 
 function subscriptionsPath(): string {
-  return path.join(candleHome(), 'subscriptions.json')
+  return path.join(smartbooksHome(), 'subscriptions.json')
 }
 
 async function readSubscriptions(): Promise<Subscription[]> {
@@ -168,7 +168,7 @@ async function readSubscriptions(): Promise<Subscription[]> {
 }
 
 async function writeSubscriptions(subs: Subscription[]): Promise<void> {
-  await fs.mkdir(candleHome(), { recursive: true })
+  await fs.mkdir(smartbooksHome(), { recursive: true })
   await writeJson(subscriptionsPath(), subs)
 }
 

@@ -272,7 +272,7 @@ Never join files. Never use `head`, `tail` or `sed` to trim book output.
 
 ## Project Shelf
 
-A checked-in `.candle/shelf.json` (or `.candlekeep/shelf.json`) declares the books this project depends on. The SessionStart hook injects a `PROJECT SHELF` block with ids and topics. Read from the shelf when the task touches its topics; if no topic matches, proceed without it.
+A checked-in `.smartbooks/shelf.json` declares the books this project depends on. The SessionStart hook injects a `PROJECT SHELF` block with ids and topics. Read from the shelf when the task touches its topics; if no topic matches, proceed without it.
 
 To manage the shelf:
 

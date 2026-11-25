@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import type { Command } from 'commander'
 import type { Item, Listing, Page } from '../types.js'
-import { candleHome } from '../store.js'
+import { smartbooksHome } from '../store.js'
 import { parsePageRange } from '../util.js'
 
 export const PAGE_LIMIT_BYTES = 20_000
@@ -59,22 +59,21 @@ export function parseTargets(args: string[]): { id: string; pages: string | null
 
 export function splitParts(text: string, limit = PAGE_LIMIT_BYTES): string[] {
   if (Buffer.byteLength(text) <= limit) return [text]
-  const lines = text.split('\n')
   const parts: string[] = []
-  let buf: string[] = []
+  let current = ''
   let bytes = 0
-  for (const line of lines) {
-    const add = Buffer.byteLength(line) + 1
-    if (bytes + add > limit && buf.length > 0) {
-      parts.push(buf.join('\n'))
-      buf = []
+  for (const character of text) {
+    const size = Buffer.byteLength(character)
+    if (bytes + size > limit && current) {
+      parts.push(current)
+      current = ''
       bytes = 0
     }
-    buf.push(line)
-    bytes += add
+    current += character
+    bytes += size
   }
-  if (buf.length > 0) parts.push(buf.join('\n'))
-  return parts.length > 0 ? parts : ['']
+  if (current) parts.push(current)
+  return parts
 }
 
 export interface ReadResult {
@@ -98,13 +97,15 @@ export function readPages(
     if (!page) continue
     if (part !== null) {
       const parts = splitParts(page.text, limit)
-      const idx = Math.max(0, Math.min(parts.length - 1, part - 1))
+      if (!Number.isInteger(part) || part < 1 || part > parts.length) throw new RangeError('Invalid page part')
+      const idx = part - 1
       pages.push({ n, text: parts[idx] ?? '', part: idx + 1, parts: parts.length })
       lastRead = n
       if (idx + 1 < parts.length) {
-        return { pages, next: { pages: String(n), part: idx + 2 }, stopped: true }
+        return { pages, next: { pages: `${n}-${hi}`, part: idx + 2 }, stopped: true }
       }
-      continue
+      const next = n < Math.min(hi, item.pages.length) ? { pages: `${n + 1}-${hi}` } : null
+      return { pages, next, stopped: next !== null }
     }
     const pageBytes = Buffer.byteLength(page.text)
     if (bytes + pageBytes > limit && pages.length > 0) {
@@ -113,7 +114,7 @@ export function readPages(
     if (pageBytes > limit) {
       const parts = splitParts(page.text, limit)
       pages.push({ n, text: parts[0] ?? '', part: 1, parts: parts.length })
-      return { pages, next: { pages: String(n), part: 2 }, stopped: true }
+      return { pages, next: { pages: `${n}-${hi}`, part: 2 }, stopped: true }
     }
     pages.push({ n, text: page.text })
     bytes += pageBytes
@@ -155,7 +156,7 @@ export function renderRead(item: Item, result: ReadResult): string {
 export async function catalogPath(): Promise<string> {
   const candidates = [
     path.join(process.cwd(), 'catalog', 'books.json'),
-    path.join(candleHome(), 'catalog.json'),
+    path.join(smartbooksHome(), 'catalog.json'),
   ]
   for (const p of candidates) {
     try {

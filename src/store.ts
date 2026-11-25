@@ -15,23 +15,23 @@ import type {
 import { homeDir } from './config.js'
 import { nowIso, readJson, shortHash, writeJson } from './util.js'
 
-export function candleHome(): string {
+export function smartbooksHome(): string {
   return homeDir()
 }
 
 export async function ensureHome(): Promise<string> {
-  const home = candleHome()
+  const home = smartbooksHome()
   await fs.mkdir(path.join(home, 'library', 'pages'), { recursive: true })
   await fs.mkdir(path.join(home, 'projects'), { recursive: true })
   return home
 }
 
 export function indexPath(): string {
-  return path.join(candleHome(), 'library', 'items.json')
+  return path.join(smartbooksHome(), 'library', 'items.json')
 }
 
 export function pagesPath(id: string): string {
-  return path.join(candleHome(), 'library', 'pages', `${id}.json`)
+  return path.join(smartbooksHome(), 'library', 'pages', `${id}.json`)
 }
 
 export async function listItems(): Promise<ItemMeta[]> {
@@ -93,7 +93,7 @@ export function newItemId(seed: string): string {
 // ---- manuscripts ----
 
 export function manuscriptsPath(): string {
-  return path.join(candleHome(), 'manuscripts.json')
+  return path.join(smartbooksHome(), 'manuscripts.json')
 }
 
 export async function listManuscripts(): Promise<Manuscript[]> {
@@ -123,7 +123,7 @@ export async function projectRoot(start = process.cwd()): Promise<string> {
   let dir = path.resolve(start)
   for (let i = 0; i < 40; i++) {
     if (dir === home || dir === path.dirname(dir)) break
-    for (const marker of ['.candle/shelf.json', '.candlekeep/shelf.json', '.git']) {
+    for (const marker of ['.smartbooks/shelf.json', '.git']) {
       try {
         await fs.access(path.join(dir, marker))
         return dir
@@ -142,7 +142,7 @@ export function projectHash(root: string): string {
 
 export async function projectStateDir(start = process.cwd()): Promise<string> {
   const root = await projectRoot(start)
-  const dir = path.join(candleHome(), 'projects', projectHash(root))
+  const dir = path.join(smartbooksHome(), 'projects', projectHash(root))
   await fs.mkdir(dir, { recursive: true })
   return dir
 }
@@ -202,7 +202,7 @@ export function renderLedger(file: LedgerFile): string {
 
 export async function readShelfManifest(start = process.cwd()): Promise<ShelfManifest | null> {
   const root = await projectRoot(start)
-  for (const rel of ['.candle/shelf.json', '.candlekeep/shelf.json']) {
+  for (const rel of ['.smartbooks/shelf.json']) {
     const p = path.join(root, rel)
     const manifest = await readJson<ShelfManifest | null>(p, null)
     if (manifest && typeof manifest.shelf === 'string' && Array.isArray(manifest.books)) return manifest
@@ -212,7 +212,7 @@ export async function readShelfManifest(start = process.cwd()): Promise<ShelfMan
 
 export async function writeShelfManifest(manifest: ShelfManifest, start = process.cwd()): Promise<string> {
   const root = await projectRoot(start)
-  const p = path.join(root, '.candle', 'shelf.json')
+  const p = path.join(root, '.smartbooks', 'shelf.json')
   await writeJson(p, manifest)
   return p
 }
@@ -236,7 +236,7 @@ export async function setActiveShelf(slug: string | null, start = process.cwd())
 // ---- access / value ----
 
 export function accessPath(): string {
-  return path.join(candleHome(), 'access.json')
+  return path.join(smartbooksHome(), 'access.json')
 }
 
 export async function readAccess(): Promise<AccessFile> {

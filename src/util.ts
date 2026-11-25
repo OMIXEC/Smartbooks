@@ -86,8 +86,9 @@ export async function readJson<T>(p: string, fallback: T): Promise<T> {
   try {
     const raw = await fs.readFile(p, 'utf8')
     return JSON.parse(raw) as T
-  } catch {
-    return fallback
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return fallback
+    throw error
   }
 }
 

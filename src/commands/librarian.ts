@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import type { Command } from 'commander'
-import { candleHome, ledgerFile, recordLedger, renderLedger, tickLedger } from '../store.js'
+import { smartbooksHome, ledgerFile, recordLedger, renderLedger, tickLedger } from '../store.js'
 import { nowIso, oneLine, printError, readJson, writeJson } from '../util.js'
 import { addCommon, emit, optsOf } from './common.js'
 
@@ -84,10 +84,10 @@ export function registerLibrarian(program: Command): void {
           domain: optsOf(cmd).domain ? oneLine(String(optsOf(cmd).domain)) : undefined,
           at: nowIso(),
         }
-        const p = path.join(candleHome(), 'gaps.json')
+        const p = path.join(smartbooksHome(), 'gaps.json')
         const gaps = await readJson<Gap[]>(p, [])
         gaps.push(gap)
-        await fs.mkdir(candleHome(), { recursive: true })
+        await fs.mkdir(smartbooksHome(), { recursive: true })
         await writeJson(p, gaps.slice(-500))
         if (optsOf(cmd).domain) {
           await recordLedger({

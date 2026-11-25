@@ -1,10 +1,10 @@
 import { promises as fs } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import type { CandleConfig, RootConfig } from './types.js'
+import type { SmartbooksConfig, RootConfig } from './types.js'
 import { readJson } from './util.js'
 
-export const DEFAULT_CONFIG: CandleConfig = {
+export const DEFAULT_CONFIG: SmartbooksConfig = {
   library: {
     roots: [
       { path: 'Ebooks', kind: 'book' },
@@ -14,7 +14,7 @@ export const DEFAULT_CONFIG: CandleConfig = {
   },
   ingest: {
     include: ['**/*.pdf', '**/*.epub', '**/*.md', '**/*.markdown', '**/*.html', '**/*.htm', '**/*.txt'],
-    exclude: ['node_modules/**', '.git/**', 'dist/**', '.candle/**', '**/.DS_Store'],
+    exclude: ['node_modules/**', '.git/**', 'dist/**', '.smartbooks/**', '**/.DS_Store'],
   },
   plugin: {
     agents: ['claude-code', 'codex', 'gemini-cli', 'cursor'],
@@ -25,28 +25,24 @@ export const DEFAULT_CONFIG: CandleConfig = {
 }
 
 export function homeDir(): string {
-  return process.env.SMARTBOOKS_HOME || process.env.CANDLE_HOME || process.env.SUMBOOKIT_HOME || path.join(os.homedir(), '.candle')
+  return process.env.SMARTBOOKS_HOME || path.join(os.homedir(), '.smartbooks')
 }
 
-export async function loadConfig(cwd = process.cwd()): Promise<CandleConfig> {
+export async function loadConfig(cwd = process.cwd()): Promise<SmartbooksConfig> {
   const home = homeDir()
-  const homeConfig = await readJson<Partial<CandleConfig>>(path.join(home, 'config.json'), {})
-  const projectConfig = await readJson<Partial<CandleConfig>>(
-    path.join(cwd, 'candle.config.json'),
-    {},
-  )
-  const smartbooksConfig = await readJson<Partial<CandleConfig>>(
+  const homeConfig = await readJson<Partial<SmartbooksConfig>>(path.join(home, 'config.json'), {})
+  const projectConfig = await readJson<Partial<SmartbooksConfig>>(
     path.join(cwd, 'smartbooks.config.json'),
     {},
   )
-  return mergeConfig(DEFAULT_CONFIG, homeConfig, projectConfig, smartbooksConfig)
+  return mergeConfig(DEFAULT_CONFIG, homeConfig, projectConfig)
 }
 
 export function mergeConfig(
-  base: CandleConfig,
-  ...overrides: Partial<CandleConfig>[]
-): CandleConfig {
-  const out: CandleConfig = {
+  base: SmartbooksConfig,
+  ...overrides: Partial<SmartbooksConfig>[]
+): SmartbooksConfig {
+  const out: SmartbooksConfig = {
     library: { roots: [...base.library.roots] },
     ingest: { ...base.ingest },
     plugin: { ...base.plugin },
@@ -63,16 +59,16 @@ export function mergeConfig(
   return out
 }
 
-export function resolveRoots(config: CandleConfig, cwd = process.cwd()): RootConfig[] {
+export function resolveRoots(config: SmartbooksConfig, cwd = process.cwd()): RootConfig[] {
   return config.library.roots.map(r => ({
     ...r,
     path: path.isAbsolute(r.path) ? r.path : path.resolve(cwd, r.path),
   }))
 }
 
-export async function writeProjectConfig(cwd: string, config: CandleConfig): Promise<void> {
+export async function writeProjectConfig(cwd: string, config: SmartbooksConfig): Promise<void> {
   await fs.writeFile(
-    path.join(cwd, 'candle.config.json'),
+    path.join(cwd, 'smartbooks.config.json'),
     JSON.stringify(config, null, 2) + '\n',
     'utf8',
   )

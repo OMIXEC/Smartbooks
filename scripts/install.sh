@@ -1,5 +1,5 @@
 #!/bin/sh
-# candle installer: build the CLI, ingest the configured books and docs, and
+# Smartbooks installer: build the CLI and
 # install the plugin into every detected coding agent.
 set -eu
 cd "$(dirname "$0")/.."

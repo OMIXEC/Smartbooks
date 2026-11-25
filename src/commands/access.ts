@@ -1,6 +1,6 @@
 import path from 'node:path'
 import type { Command } from 'commander'
-import { candleHome, completeAccess, getItem, readAccess, startAccess } from '../store.js'
+import { smartbooksHome, completeAccess, getItem, readAccess, startAccess } from '../store.js'
 import { readJson } from '../util.js'
 import { addCommon, emit, optsOf } from './common.js'
 
@@ -35,7 +35,7 @@ export function registerAccess(program: Command): void {
       .action(async cmd => {
         const file = await readAccess()
         const tracked = await readJson<{ id: string; title: string }[]>(
-          path.join(candleHome(), 'reads.json'),
+          path.join(smartbooksHome(), 'reads.json'),
           [],
         )
         const reads = [...file.sessions.flatMap(s => s.reads), ...tracked]

@@ -11,7 +11,7 @@ function run(args) {
   return execFileSync(process.execPath, [cli, ...args], {
     cwd: root,
     encoding: 'utf8',
-    env: { ...process.env, CANDLE_HOME: process.env.CANDLE_HOME || path.join(root, '.candle') },
+    env: { ...process.env, SMARTBOOKS_HOME: process.env.SMARTBOOKS_HOME || path.join(root, '.smartbooks') },
   })
 }
 
@@ -28,7 +28,7 @@ function check(name, fn) {
 check('version', () => run(['version']).trim())
 check('items list', () => {
   const data = JSON.parse(run(['items', 'list', '--json']))
-  if (!Array.isArray(data.items) || data.items.length === 0) throw new Error('library is empty; run `candle sync`')
+  if (!Array.isArray(data.items) || data.items.length === 0) throw new Error('library is empty; run `sbs sync`')
   return `${data.items.length} items`
 })
 check('items toc', () => {

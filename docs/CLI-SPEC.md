@@ -1,6 +1,6 @@
 # Smartbooks CLI spec
 
-The primary binary is `sbs`; `candle`, `candlekeep` and `sumbookit` are aliases. All commands
+The primary binary is `sbs`. All commands
 accept `--json`, `--no-session` and `--no-update-check` (the latter two are
 compatibility no-ops).
 
@@ -114,15 +114,14 @@ is the expected value.
 
 | Command | Notes |
 |---|---|
-| `shelf init [--name]` | Writes `./.candle/shelf.json` at the project root |
+| `shelf init [--name]` | Writes `./.smartbooks/shelf.json` at the project root |
 | `shelf current [--local] [--json]` | `{ slug, source }` |
 | `shelf show [slug] [--json]` | Shelf and books |
 | `shelf use <slug>` | Sets the local active pointer |
 | `shelf add <id> [--topics] [--why]` / `shelf remove <id>` | |
 | `shelf create <name>` / `shelf delete <slug>` / `shelf sync` | |
 
-The project root is the nearest ancestor holding `.candle/shelf.json`,
-`.candlekeep/shelf.json` or `.git`, never `$HOME`.
+The project root is the nearest ancestor holding `.smartbooks/shelf.json` or `.git`, never `$HOME`.
 
 ## Librarian
 
@@ -131,7 +130,7 @@ The project root is the nearest ancestor holding `.candle/shelf.json`,
 | `librarian ledger show [--render]` | JSON ledger or the rendered `EXPLORED (…)` block |
 | `librarian ledger tick --session <id> [--render]` | Idempotent session counter |
 | `librarian ledger record --domain <d> --outcome hit\|miss\|declined [--book <id>]` | |
-| `librarian report-gap --intent --category --subcategory [--suggested-title] [--suggested-author] [--domain]` | Appends to `~/.candle/gaps.json`; prints `Gap reported.` |
+| `librarian report-gap --intent --category --subcategory [--suggested-title] [--suggested-author] [--domain]` | Appends to `~/.smartbooks/gaps.json`; prints `Gap reported.` |
 
 ## Sessions
 

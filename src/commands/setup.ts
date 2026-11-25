@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { Command } from 'commander'
-import { candleHome as smartbooksHome, ensureHome } from '../store.js'
+import { smartbooksHome, ensureHome } from '../store.js'
 import { exists, nowIso, readJson, writeJson } from '../util.js'
 import { addCommon, emit, optsOf } from './common.js'
 import { VERSION } from './version.js'
@@ -335,10 +335,6 @@ async function installClaudeCode(): Promise<void> {
     'Bash(sbs access:*)',
     'Bash(sbs auth whoami:*)',
     'Bash(sbs --help:*)',
-    'Bash(sumbookit items list:*)',
-    'Bash(sumbookit items toc:*)',
-    'Bash(sumbookit items read:*)',
-    'Bash(sumbookit items get:*)',
   ]) {
     if (!allow.includes(cmd)) allow.push(cmd)
   }
@@ -453,7 +449,6 @@ async function installOpencode(): Promise<void> {
       '    resource: "sbs *"',
       '    effect: allow',
       '  - action: shell',
-      '    resource: "sumbookit *"',
       '    effect: allow',
       '  - action: skill',
       '    resource: "smartbooks"',
@@ -488,14 +483,7 @@ async function installBinary(): Promise<void> {
   const wrapper = `#!/bin/sh\nexec node ${JSON.stringify(path.join(root, 'dist', 'cli.js'))} "$@"\n`
   const target = path.join(binDir, 'sbs')
   await fs.writeFile(target, wrapper, { mode: 0o755 })
-  for (const name of ['candle', 'candlekeep', 'sumbookit']) {
-    const alias = path.join(binDir, name)
-    try {
-      await fs.symlink('sbs', alias)
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error
-    }
-  }
+
 }
 
 async function installShell(): Promise<void> {

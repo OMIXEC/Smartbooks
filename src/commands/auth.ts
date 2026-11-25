@@ -12,7 +12,7 @@ export function registerAuth(program: Command): void {
       .description('Show the local identity')
       .action(async cmd => {
         const who: WhoAmI = {
-          email: 'local@candle',
+          email: 'local@smartbooks',
           name: 'Local library',
           tier: 'LOCAL',
           monthlyReadLimit: null,

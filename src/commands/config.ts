@@ -2,12 +2,12 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import type { Command } from 'commander'
 import { loadConfig, homeDir } from '../config.js'
-import type { CandleConfig } from '../types.js'
+import type { SmartbooksConfig } from '../types.js'
 import { readJson, writeJson } from '../util.js'
 import { addCommon, emit, optsOf } from './common.js'
 
 export function registerConfig(program: Command): void {
-  const config = program.command('config').description('View or change your candle configuration')
+  const config = program.command('config').description('View or change your Smartbooks configuration')
 
   addCommon(
     config
@@ -34,17 +34,17 @@ export function registerConfig(program: Command): void {
     config
       .command('set <key> <value>')
       .description('Set a config value')
-      .option('--project', 'Write to ./candle.config.json')
-      .option('--global', 'Write to ~/.candle/config.json')
+      .option('--project', 'Write to ./smartbooks.config.json')
+      .option('--global', 'Write to ~/.smartbooks/config.json')
       .action(async (key: string, value: string, cmd: Command) => {
-        const projectFile = path.join(process.cwd(), 'candle.config.json')
+        const projectFile = path.join(process.cwd(), 'smartbooks.config.json')
         const hasProject = await fs.access(projectFile).then(() => true).catch(() => false)
         const target = optsOf(cmd).global
           ? path.join(homeDir(), 'config.json')
           : optsOf(cmd).project || hasProject
             ? projectFile
             : path.join(homeDir(), 'config.json')
-        const current = await readJson<Partial<CandleConfig>>(target, {})
+        const current = await readJson<Partial<SmartbooksConfig>>(target, {})
         setPath(current as Record<string, unknown>, key, parseValue(value))
         await fs.mkdir(path.dirname(target), { recursive: true })
         await writeJson(target, current)

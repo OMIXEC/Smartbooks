@@ -21,7 +21,7 @@ export async function ingestEpub(_file: string, raw: Buffer, fallbackTitle: stri
   }
 
   const container = get('META-INF/container.xml')
-  const opfPath = /full-path="([^"]+)"/i.exec(container)?.[1] ?? findOpf(files)
+  const opfPath = /full-path\s*=\s*["']([^"']+)["']/i.exec(container)?.[1] ?? findOpf(files)
   if (!opfPath) throw new Error('EPUB has no OPF package document')
   const opf = get(opfPath)
   const opfDir = path.posix.dirname(opfPath)
@@ -43,14 +43,21 @@ export async function ingestEpub(_file: string, raw: Buffer, fallbackTitle: stri
   const spine: string[] = []
   for (const m of opf.matchAll(/<itemref\b([^>]*)\/?>/gi)) {
     const idref = attr(m[1] ?? '', 'idref')
-    if (idref && manifest.has(idref)) spine.push(idref)
+    if (!idref || !manifest.has(idref)) throw new Error('EPUB spine references a missing manifest item')
+    spine.push(idref)
+  }
+
+  if (spine.length === 0) throw new Error('EPUB has no readable spine')
+  for (const id of spine) {
+    const item = manifest.get(id)!
+    if (!files[item.href]) throw new Error(`EPUB spine content is missing: ${item.href}`)
   }
 
   const navItem =
     [...manifest.values()].find(i => i.properties.split(/\s+/).includes('nav')) ??
     [...manifest.values()].find(i => i.href.endsWith('.ncx'))
   const nav = navItem ? get(navItem.href) : ''
-  const navEntries = parseNav(nav, opfDir)
+  const navEntries = parseNav(nav, navItem ? path.posix.dirname(navItem.href) : opfDir)
 
   const pageByHref = new Map<string, number>()
   spine.forEach((id, i) => {
